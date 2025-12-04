@@ -2,7 +2,7 @@ name: Unzip Project
 on:
   push:
     paths:
-      - 'project.zip' # 监测这个压缩包的上传动作
+      - 'api.zip' # 监测这个压缩包的上传动作
 jobs:
   unzip:
     runs-on: ubuntu-latest
