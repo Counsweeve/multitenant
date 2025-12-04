@@ -2,8 +2,8 @@ name: Unzip Project
 on:
   push:
     paths:
-      - 'api.zip' # 保留：上传api.zip仍会自动触发（不需要可删掉这整段push配置）
-  workflow_dispatch:  # 新增：允许手动触发（核心配置）
+      - 'api.zip'
+  workflow_dispatch:
 permissions:  
   contents: write  
 jobs:
@@ -12,11 +12,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:  # 补充：拉取完整仓库+赋予推送权限（避免git push失败）
+        with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Install unzip (确保工具存在)
-        run: apt-get update && apt-get install -y unzip
+      # 删掉“Install unzip”这一步，直接执行解压
       - name: Unzip the package
         run: unzip api.zip -d ./api-files 
       - name: Commit unzipped files
@@ -24,5 +23,5 @@ jobs:
           git config --global user.name "Counsweeve"
           git config --global user.email "basya7@163.com"
           git add ./api-files
-          git commit -m "Unzip api files" || echo "无新文件需要提交" # 避免无变更时报错
+          git commit -m "Unzip api files" || echo "无新文件需要提交"
           git push
