@@ -3,6 +3,8 @@ on:
   push:
     paths:
       - 'api.zip' # 监测这个压缩包的上传动作
+permissions:  # 新增这一段，赋予推送权限
+  contents: write  # 关键：允许写入/推送仓库内容
 jobs:
   unzip:
     runs-on: ubuntu-latest
