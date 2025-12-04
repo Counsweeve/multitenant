@@ -1,0 +1,20 @@
+name: Unzip Project
+on:
+  push:
+    paths:
+      - 'project.zip' # 监测这个压缩包的上传动作
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Unzip the package
+        run: unzip project.zip -d ./project-files # 解压到project-files文件夹
+      - name: Commit unzipped files
+        run: |
+          git config --global user.name "Counsweeve"
+          git config --global user.email "basya7@163.com"
+          git add ./project-files
+          git commit -m "Unzip project files"
+          git push
