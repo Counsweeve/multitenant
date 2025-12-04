@@ -2,21 +2,27 @@ name: Unzip Project
 on:
   push:
     paths:
-      - 'api.zip' # 监测这个压缩包的上传动作
-permissions:  # 新增这一段，赋予推送权限
-  contents: write  # 关键：允许写入/推送仓库内容
+      - 'api.zip' # 保留：上传api.zip仍会自动触发（不需要可删掉这整段push配置）
+  workflow_dispatch:  # 新增：允许手动触发（核心配置）
+permissions:  
+  contents: write  
 jobs:
   unzip:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:  # 补充：拉取完整仓库+赋予推送权限（避免git push失败）
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install unzip (确保工具存在)
+        run: apt-get update && apt-get install -y unzip
       - name: Unzip the package
-        run: unzip project.zip -d ./project-files # 解压到project-files文件夹
+        run: unzip api.zip -d ./api-files 
       - name: Commit unzipped files
         run: |
           git config --global user.name "Counsweeve"
           git config --global user.email "basya7@163.com"
-          git add ./project-files
-          git commit -m "Unzip project files"
+          git add ./api-files
+          git commit -m "Unzip api files" || echo "无新文件需要提交" # 避免无变更时报错
           git push
